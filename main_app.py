@@ -7,8 +7,8 @@ login = app.login
 @login.user_loader
 def load_user(user_id):
     """
-        user_loader回调：
-        用于从会话中存储的用户ID重新加载用户对象
+    user_loader回调：
+    用于从会话中存储的用户ID重新加载用户对象
     """
     user = {
         'id': 1,
@@ -22,14 +22,14 @@ def load_user(user_id):
 @App.route('/login')
 def login():
     """
-        用户登陆处理
+    用户登陆处理
     """
     return 'login'
 
 @App.route('/logout')
 def logout():
     """
-        用户登出处理
+    用户登出处理
     """
     logout_user()
 
