@@ -1,6 +1,7 @@
 import app
 from flask_login import login_user, logout_user, login_required
 from flask import request
+import layoutAnalyse
 
 App = app.app
 login = app.login
@@ -95,6 +96,33 @@ def getProject(project_id):
     '''
     pmsg = project.query.filter_by(id=project_id).first()
     return pmsg
+
+@App.route('/shelf/uploadIMG', methods=['GET', 'POST'])
+@login_required
+def uploadIMG():
+    '''
+    用户通过上传图片方式上传资料
+    '''
+    msg =  None
+    if request.method == 'POST':
+        # 获取图像列表
+        imgs = request.form.get('img')
+        # 处理图片
+        msg = getMessageFromIMG(imgs)
+    return msg
+
+def getMessageFromIMG(imgs):
+    # analyse = layoutAnalyse()
+    # for img in imgs:
+    #     # 获取板块分析后的图片列表
+    #     new_imgs = analyse.analyse()
+    #     # 循环，接入接口，获得文本信息
+    return message
+
+@App.route('/shelf/uploadPDF', methods=['GET', 'POST'])
+@login_required
+def uploadPDF():
+    return
 
 
 if __name__ == '__main__':
