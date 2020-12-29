@@ -3,6 +3,12 @@ from flask_login import login_user, logout_user, login_required
 from flask import request
 import layoutAnalyse
 
+from pdfminer.pdfparser import  PDFParser,PDFDocument
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import PDFPageAggregator
+from pdfminer.layout import LTTextBoxHorizontal,LAParams
+from pdfminer.pdfinterp import PDFTextExtractionNotAllowed
+
 App = app.app
 login = app.login
 
@@ -122,8 +128,106 @@ def getMessageFromIMG(imgs):
 @App.route('/shelf/uploadPDF', methods=['GET', 'POST'])
 @login_required
 def uploadPDF():
-    return
+    msgs = None
+    if request.method == 'POST':
+        # 获取文件
+        pdf_file = request.form.get('pdf_file')
+        # 处理文件
+        msgs = getMessageFromPDF(pdf_file)
+        # 处理获得的文本信息
+    return msgs
 
+def getMessageFromPDF(pdf_file):
+    '''
+    解析PDF文本
+    '''
+    # 创建PDF文档分析器
+    parser = PDFParser(pdf_file)
+    # 创建PDF文档
+    doc = PDFDocument()
+    # 链接分析器，与文档对象
+    parser.set_document(doc)
+    doc.set_parser
+
+    doc.initialize()
+    msgs = None
+    # 检测文档是否提供txt转换，不提供就忽略
+    if not doc.is_extractable:
+        raise PDFTextExtractionNotAllowed
+    else:
+        # 创建PDF资源管理器，来共享资源
+        manager = PDFResourceManager()
+        # 创建一个PDF设备对象
+        laparams = LAParams()
+        device = PDFPageAggregator(manager, laparams=laparams)
+        # 创建一个PDF解释其对象
+        interpreter = PDFPageInterpreter(manager, device)
+
+        # doc.get_pages() 获取page列表
+        for page in doc.get_pages():
+            interpreter.process_page(page)
+            # 接受该页面的LTPage对象
+            layout = device.get_result()
+            # LTPage对象 里面存放着 这个page解析出的各种对象
+            # 一般包括LTTextBox, LTFigure, LTImage, LTTextBoxHorizontal
+            for x in layout:
+                # 对不同对象做不同转换
+                # 对于图片
+                if(isinstance(x, LTImage)):
+                    # msg = getMessageFromIMG(x)
+                    break
+    return msgs
+
+#笔记搜索接口
+@App.route('/note/search', methods=['GET', 'POST'])
+@login_required
+def noteSearch():
+    '''
+    content: 传入参数，用户键入搜索内容
+    notelist: 传入参数，笔记信息列表
+    notelist[i]: 字典，笔记信息
+    '''
+    notelist = None
+    if request.method == "GET":
+        content = request.args.get("content")
+
+        # 根据用户键入的搜索内容，查询数据库中与之匹配的用户的全部笔记
+        # notelist = getNoteList(content)
+    return notelist
+
+#获取笔记总列表接口
+@App.route('/note/All', methods=['GET', 'POST'])
+@login_required
+def noteAll():
+    '''
+    content: 传入参数，用户键入搜索内容
+    booklist: 传入参数，书籍信息列表
+    booklist[i]: 字典，书籍信息
+    '''
+    notelist = None
+    if request.method == "GET":
+        content = request.args.get("content")
+
+        # 根据获取到的响应查询相应用户的数据库，查询该用户所做笔记的全部书籍与信息
+        # booklist = getBookList(content)
+    return booklist
+
+#获取单本笔记子目录接口
+@App.route('note/anote', methods=['GET', 'POST'])
+@login_required
+def noteAnote():
+    '''
+    content: 传入参数，用户键入搜索内容
+    notelist: 传入参数，笔记信息列表
+    notelist[i]: 字典，笔记信息
+    '''
+    notelist = None
+    if request.method == "GET":
+        content = request.args.get("content")
+
+        # 根据获取到的响应查询响应用户书籍的数据库，查询该用户该本书的全部笔记信息
+        # notelist = getNoteList(content)
+    return notelist
 
 if __name__ == '__main__':
     App.run(debug=True, host='127.0.0.1', port='8888')
