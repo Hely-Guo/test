@@ -253,5 +253,53 @@ def noteAnote():
         # notelist = getNoteList(content)
     return notelist
 
+#获取图书信息
+#获取图书简介描述
+@App.route('/shelf/introduction', methods=['GET', 'POST'])
+@login_required
+def shelfIntroduction():
+    '''
+    book: 传入参数，用户选择的图书
+    introduction： 该本书籍简介
+    '''
+    if request.method == "GET":
+        book = request.args.get("book")
+
+        # 根据获取到的响应查询书籍的数据库，得到该书籍的简介信息
+        # introduction = getIntroduction(book);
+    return introduction
+
+#获取图书文本信息
+@App.route('/shelf/text', methods=['GET', 'POST'])
+@login_required
+def shelfText():
+    '''
+    book: 传入参数，用户选择的图书
+    text： 该本书籍文本内容
+    '''
+    if request.method == "GET":
+        book = request.args.get("book")
+
+        # 根据获取到的响应查询书籍的数据库，得到该书籍的文本信息地址
+        # text = getText(text);
+    return text
+
+#获取图书章节信息
+@App.route('/shelf/Chapter', methods=['GET', 'POST'])
+@login_required
+def shelfChapter():
+    '''
+    book: 传入参数，用户选择的图书
+    chapter： 该本书籍章节信息
+    chapter[i]: 字典，章节信息
+    '''
+    if request.method == "GET":
+        book = request.args.get("book")
+
+        # 根据获取到的响应查询书籍的数据库，得到该书籍的章节信息地址
+        # text = getText(text);
+    return chapter
+
+
 if __name__ == '__main__':
     App.run(debug=True, host='127.0.0.1', port='8888')
