@@ -178,6 +178,30 @@ def getMessageFromPDF(pdf_file):
                     break
     return msgs
 
+@App.route('/shelf/createProject', methods=['GET', 'POST'])
+@login_required
+def createProject():
+    '''
+    project_name: 传入参数，创建项目名称
+    project_pwd: 传入参数，创建项目密钥
+    '''
+    if request.method == 'POST':
+        project_name = request.form.get('project_name')
+        project_pwd = request.form.get('project_pwd')
+
+
+@App.route('/book/getAudio', method=['GET', 'POST'])
+@login_required
+def getAudio():
+    '''
+    bookid: 传入参数，图书编号
+    '''
+    msg = getBookMsg(bookid)
+    # 连接接口
+
+def getBookMsg(bookid):
+    return
+
 #笔记搜索接口
 @App.route('/note/search', methods=['GET', 'POST'])
 @login_required
